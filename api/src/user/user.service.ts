@@ -10,11 +10,12 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly entityManager: EntityManager,
+    //private readonly entityManager: EntityManager,
   ) {}
 
   create(createUserDto: UserDto) {
-    return this.entityManager.save(new User(createUserDto));
+  
+    return this.userRepository.save(createUserDto);
   }
 
   async findAll() {
@@ -29,8 +30,12 @@ export class UserService {
     return dtos;
   }
 
-  findOne(id: number) {
-    return this.userRepository.findBy({ id });
+  async findOne(id: number) {
+
+    const user = await this.userRepository.findBy({ id })
+    const userDTO = user.map((user) => UserDto.toDTO(user));
+
+    return userDTO;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

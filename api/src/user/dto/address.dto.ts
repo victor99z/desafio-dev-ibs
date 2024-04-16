@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, isNumber } from 'class-validator';
+import { Address } from '../entities/address.entity';
 
 export class AddressDto {
   @IsString()
@@ -32,5 +33,27 @@ export class AddressDto {
   @IsNotEmpty()
   moreDetails: string;
 
-  static toDTO(address: Address): AddressDto {}
+  constructor(street, neighborhood, number, city, state, country, postalCode, moreDetails){
+    this.street = street;
+    this.neighborhood = neighborhood;
+    this.number = number;
+    this.city = city;
+    this.state = state;
+    this.country = country;
+    this.postalCode = postalCode;
+    this.moreDetails = moreDetails;
+  }
+
+  static toDTO(address: Address): AddressDto {
+    return new AddressDto(
+      address.street, 
+      address.neighborhood, 
+      address.number, 
+      address.city, 
+      address.state, 
+      address.country, 
+      address.postalCode, 
+      address.moreDetails
+    );
+  }
 }

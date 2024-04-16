@@ -8,6 +8,7 @@ import {
 import { Address } from '../entities/address.entity';
 import { User } from '../entities/user.entity';
 import { Exclude } from 'class-transformer';
+import { AddressDto } from './address.dto';
 
 export class UserDto {
   readonly id: number;
@@ -28,7 +29,7 @@ export class UserDto {
   readonly maritalStatus: string;
 
   @IsArray()
-  readonly addresses: Address[];
+  readonly addresses: AddressDto[];
 
   constructor(name, gender, birthdate, maritalStatus, addresses) {
     this.name = name;
@@ -39,12 +40,15 @@ export class UserDto {
   }
 
   static toDTO(user: User): UserDto {
+
+    const addressDtos = user.addresses.map((address) => AddressDto.toDTO(address));
+
     return new UserDto(
       user.name,
       user.gender,
       user.birthdate,
       user.maritalStatus,
-      user.addresses,
+      addressDtos,
     );
   }
 }
