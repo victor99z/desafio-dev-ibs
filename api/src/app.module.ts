@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from './user/entities/user.entity';
 import { Address } from './user/entities/address.entity';
+import { AuthModule } from './auth/auth.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -24,6 +26,13 @@ import { Address } from './user/entities/address.entity';
       database: 'ibs',
       entities: [User, Address],
     }),
+    AuthModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 5,
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],
