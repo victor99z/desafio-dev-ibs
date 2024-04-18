@@ -5,27 +5,19 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { User } from './user/entities/user.entity';
-import { Address } from './user/entities/address.entity';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { database_config } from './rootConfig';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: ['../../.env'],
     }),
     UserModule,
-    TypeOrmModule.forRoot({
-      autoLoadEntities: true,
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'admin',
-      password: 'admin',
-      database: 'ibs',
-      entities: [User, Address],
-    }),
+    TypeOrmModule.forRoot(database_config),
     AuthModule,
     ThrottlerModule.forRoot([
       {
@@ -33,6 +25,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         limit: 5,
       },
     ]),
+    PrometheusModule.register(),
   ],
   controllers: [AppController],
   providers: [AppService],
